@@ -38,8 +38,9 @@ pnpm test:headed
 
 ## Mobile Devices Tested
 
-- **Chromium Mobile**: Pixel 5 (2/2 tests passing)
-- **WebKit Mobile**: iPad Pro (pending native dependencies resolution)
+- **Chromium Mobile**: Pixel 5 ✓ (2/2 tests passing - 3.1s)
+- **WebKit Mobile**: iPad Pro ✓ (2/2 tests passing - 3.9s)
+- **Total**: 4/4 tests passing (5.3s combined execution)
 
 ## Key Fixes
 
