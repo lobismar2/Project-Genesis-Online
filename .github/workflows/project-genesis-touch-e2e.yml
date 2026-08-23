@@ -1,0 +1,64 @@
+name: Project Genesis touch E2E
+
+on:
+  push:
+    paths:
+      - "artifacts/project-genesis/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/project-genesis-touch-e2e.yml"
+
+  pull_request:
+    paths:
+      - "artifacts/project-genesis/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/project-genesis-touch-e2e.yml"
+
+  workflow_dispatch:
+
+jobs:
+  touch-regression:
+    name: Touch regression (Chromium + WebKit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers and system dependencies
+        run: pnpm --filter @workspace/project-genesis exec playwright install --with-deps chromium webkit
+
+      - name: Run touch regression in Chromium and WebKit
+        run: >
+          pnpm --filter @workspace/project-genesis exec playwright test
+          e2e/touch-regression.spec.ts
+          --project=chromium-mobile
+          --project=webkit-mobile
+          --reporter=list
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-genesis-touch-playwright-report
+          path: |
+            artifacts/project-genesis/playwright-report
+            artifacts/project-genesis/test-results
+          if-no-files-found: ignore
+          retention-days: 14
