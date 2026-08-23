@@ -1,0 +1,14 @@
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      '@workspace/project-genesis':
+        link: true
+        version: 'link:./artifacts/project-genesis'
+
+packages: {}
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
