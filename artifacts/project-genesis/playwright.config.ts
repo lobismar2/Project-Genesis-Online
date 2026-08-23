@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
 
 export default defineConfig({
   testDir: './e2e',
@@ -16,7 +17,19 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium-mobile',
-      use: { ...devices['Pixel 5'] },
+      use: {
+        ...devices['Pixel 5'],
+        launchArgs: ['--no-sandbox'],
+        executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+      },
+    },
+    {
+      name: 'chromium-desktop',
+      use: {
+        ...devices['Desktop Chrome'],
+        launchArgs: ['--no-sandbox'],
+        executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+      },
     },
     {
       name: 'webkit-mobile',

@@ -8,7 +8,7 @@ test.describe('Project Genesis Touch Regression', () => {
 
   test('Joystick touch with pointerup and pointercancel', async ({ page, browserName }) => {
     // Start game by clicking hub-play button
-    await page.click('button-hub-play');
+    await page.click('[data-testid="button-hub-play"]');
     await page.waitForSelector('[data-testid="game-screen"]', { timeout: 5000 });
 
     // Select faction
@@ -34,7 +34,7 @@ test.describe('Project Genesis Touch Regression', () => {
 
   test('Combat, navigation and panel open/close', async ({ page }) => {
     // Start game by clicking hub-play button
-    await page.click('button-hub-play');
+    await page.click('[data-testid="button-hub-play"]');
     await page.waitForSelector('[data-testid="game-screen"]', { timeout: 5000 });
 
     // Select faction
