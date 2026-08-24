@@ -1,0 +1,128 @@
+PROJECT GENESIS — LISTA COMPLETA DE SPRITES
+
+OBJETIVO
+Produzir sprites para o RPG de ação dark-fantasy/sci-fi Project Genesis sem alterar combate, balanceamento, modo offline ou cooperação.
+
+REGRAS
+- Pixel art, PNG RGBA e fundo transparente.
+- Sem blur, anti-aliasing, suavização ou escala fracionada.
+- Manter pixels nítidos, mesma escala visual e fallback para cada asset.
+- Nomes sem espaços/acentos.
+- Entregar manifest.json, previews e licença comercial.
+
+PERSONAGENS JOGÁVEIS — 8
+Cada um precisa de idle (2–4), walk (6–8 por direção), attack (4–6 por direção), hurt (2–3), dead (4–6), portrait e ícone. Direções: south/east/north/west.
+
+moss — Colosso de Musgo — vanguarda — Despertos — vegetal, musgo e raízes
+  Habilidades: root, slam, bark, forest
+thorn — Espreitador de Espinhos — atirador — Despertos — arqueiro vegetal e espinhos rosa
+  Habilidades: volley, snare, venom, bramble
+spore — Tecelão de Esporos — controlador — Despertos — fungos, cogumelos e partículas
+  Habilidades: sporebolt, cloud, mend, bloom
+mother — Guardião Raiz — suporte — Despertos — guardião ancestral e seiva
+  Habilidades: vine, ward, pulse, grove
+tungsten — Vanguarda de Tungstênio — tanque — Consórcio — armadura industrial ciano
+  Habilidades: bash, guard, magnet, fortress
+neon — Lâmina Neon — duelista — Consórcio — guerreiro ágil e lâminas neon
+  Habilidades: dash, parry, flurry, afterimage
+hex — Artilheiro Hex — atirador — Consórcio — arma de energia laranja
+  Habilidades: shot, mine, overclock, barrage
+bio — Engenheiro Biossonda — artífice — Consórcio — engenheiro biocibernético com drone
+  Habilidades: drone, patch, shock, singularity
+
+ASSETS JÁ EXISTENTES
+characters/char-01.png até char-18.png
+characters/char-01-icon.png até char-18-icon.png
+Sheets: 768x1408. Ícones: 128x128. Usar 8 nas classes e reservar 10 para variantes/skins/aliados. Inspecionar a grade antes de cortar.
+
+HABILIDADES
+Criar 32 ícones (32x32 ou 48x48) e um efeito animado para cada:
+root, slam, bark, forest, volley, snare, venom, bramble,
+sporebolt, cloud, mend, bloom, vine, ward, pulse, grove,
+bash, guard, magnet, fortress, dash, parry, flurry, afterimage,
+shot, mine, overclock, barrage, drone, patch, shock, singularity.
+
+Tipos de efeito: strike (corte/projétil), burst (explosão), heal (cura/halo), dash (rastro), control (raízes/armadilha/ímã/EMP/stun).
+
+INIMIGOS — 10
+Cada um precisa de idle, walk, attack, hurt, dead e portrait/ícone:
+rat — Rato-pardo — charger — pequeno e marrom, floresta
+crab — Caranguejo — melee — casco vermelho, praia
+bat — Morcego — ranged — asas, caverna
+goblin — Goblin — charger — humanoide verde
+skeleton — Esqueleto — ranged — cemitério e projéteis
+snake — Serpente — charger — rasteja, deserto
+ogre — Ogro — melee — grande, lento e resistente
+spectre — Espectro — ranged — fantasma translúcido
+deathknight — Cavaleiro da Morte — melee — armadura pesada, montanhas
+boss — Rei Esqueleto — summoner — chefe final
+
+REI ESQUELETO
+Criar conjunto próprio, não ampliar o esqueleto: idle, walk, ataque melee, ataque ranged, summon, hurt, dead, entrada, mudança de fase, ícone e morte. Criar 3 variantes:
+Fase 1: coroa, ataques básicos e invocação.
+Fase 2: energia/armadura alterada, mais agressivo e investida.
+Fase 3: aura dourada/vermelha, muitas partículas e forma final.
+
+NPCS — 4
+Cada um: idle em até 4 direções, portrait e indicadores de missão disponível/pronta:
+guide — Guardião da Árvore-Mãe — Despertos — guia vegetal
+elder — Ancião da Floresta — Despertos — sábio natural
+smith — Ferreiro do Consórcio — Consórcio — ferreiro tecnológico
+sentry — Sentinela Neon — Consórcio — guarda futurista
+
+ARMAS — 7
+sword1 Adaga Prática comum
+sword2 Espada de Aço incomum
+axe Machado incomum
+morningstar Maça Estrela raro
+bluesword Lâmina Azul raro
+redsword Lâmina Rubra épico
+goldensword Relíquia Solar lendário
+
+ARMADURAS — 6
+clotharmor Traje de Pano comum
+leatherarmor Couraça de Couro incomum
+mailarmor Cota de Malha incomum
+platearmor Armadura de Placas raro
+redarmor Armadura Rubra raro
+goldenarmor Armadura Solar lendário
+Verificar também chainarmor, referenciado por uma missão.
+
+CONSUMÍVEIS
+flask Frasco de Vida
+firepotion Poção especial de fogo antigo
+Criar loot genérico, bloqueado, equipado, item novo e halos de raridade.
+
+TILES — 12
+grass, grass2, dark, dead, path, water, sand, mountain, lava, safeA, safeC, cave
+Criar bordas, cantos, transições e variações para água, lava, grama, areia, pedra e caminho.
+
+OBJETOS
+tree (3–5 variações), rock (3–5), grave (3–4), portal (pulsando/abrindo/fechando), cave (entrada escura), firepotion (brilho/flutuação/coleta).
+
+DECORAÇÃO
+Floresta: raízes, arbustos, flores, cogumelos, troncos, cristais.
+Cemitério: ossos, velas, lápides quebradas, árvores secas, névoa.
+Caverna: estalactites, cristais, pedras, runas, poças.
+Deserto: ossos grandes, pedras, ruínas, cactos, cinzas.
+Montanhas: pedras negras, lava, brasas, ruínas industriais, sinais do Consórcio.
+Praia: areia, água, espuma, conchas, pedras costeiras.
+
+EFEITOS DE COMBATE
+Ataque melee, cortes horizontal/vertical, golpe pesado, projétil, impacto, dano, crítico, cura, escudo, invencibilidade, stun, slow, poison, fogo, morte normal, morte de chefe, coleta, nível, habilidade desbloqueada, mudança de fase, portal e teleporte.
+
+HUD E INTERFACE
+Ícones de vida, mana, XP, nível, ataque, armadura, poção, alvo, jogador, jogador coop, NPC, missão disponível/pronta/bloqueada/concluída, diário, conquista, mapa, portal, região, raridades, configurações, fechar, voltar, reviver, salvar, online, offline, sala coop, jogador conectado, sincronização, joystick, ataque mobile, habilidades 1/2/3 e ultimate.
+Usar dusk-icons/all.png e pixel-ui/all.png quando houver item compatível.
+
+ENTREGA TÉCNICA
+Para cada sheet informar tamanho total, frameWidth, frameHeight, colunas, linhas, estados, direções, FPS, ponto dos pés, hitbox e uso de espelhamento. Pés alinhados, impacto legível, morte visível, chefe sem bloquear a tela e todos os sprites legíveis no celular.
+
+ORDEM
+1) 8 classes; 2) rat/bat/skeleton/snake/deathknight; 3) Rei nas 3 fases; 4) ataque/dano/morte/cura/projéteis; 5) NPCs; 6) itens/tiles/objetos; 7) crab/goblin/ogre/spectre; 8) 32 ícones/efeitos; 9) decoração, cooperação e missões.
+
+ACEITE
+8 classes com 5 estados e 4 direções; 10 inimigos com 5 estados; chefe com 3 fases; 4 NPCs; todos itens, tiles, objetos, efeitos e HUD; transparência correta; previews, manifest e licença; fallback preservado.
+
+RESUMO
+8 personagens, 10 inimigos, 1 chefe em 3 fases, 4 NPCs, 32 habilidades, 13 equipamentos, 2 consumíveis, 12 tiles, 6 objetos, 20+ efeitos e 30+ ícones.

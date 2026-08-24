@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+.threshold-command {
+  --bg: #0a100d;
+  --panel: rgba(15, 28, 20, .86);
+  --panel-soft: rgba(26, 43, 30, .58);
+  --line: rgba(194, 216, 183, .14);
+  --ink: #edf4e6;
+  --muted: #9aaa98;
+  --faint: #647562;
+  --gold: #f1cf6b;
+  --cyan: #83dce8;
+  --green: #74cf88;
+  min-height: 100dvh;
+  overflow: hidden;
+  color: var(--ink);
+  background: radial-gradient(circle at 70% 12%, rgba(58, 123, 80, .2), transparent 28rem), radial-gradient(circle at 20% 110%, rgba(197, 169, 83, .1), transparent 25rem), var(--bg);
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.threshold-command::before {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: .18;
+  background-image: linear-gradient(rgba(159, 198, 151, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(159, 198, 151, .05) 1px, transparent 1px);
+  background-size: 37px 37px;
+  mask-image: linear-gradient(120deg, black, transparent 75%);
+}
+
+.threshold-command::after {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: .055;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 130 130' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.76' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.threshold-shell { position: relative; z-index: 1; width: min(1320px, 100%); min-height: 100dvh; margin: 0 auto; padding: 26px 42px 22px; }
+.threshold-topbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 52px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.threshold-brand, .threshold-profile, .threshold-account, .threshold-wallet, .threshold-location, .threshold-nav button, .threshold-footer, .rail-status { display: flex; align-items: center; }
+.threshold-brand { gap: 12px; }
+.threshold-mark { display: grid; width: 34px; height: 34px; place-items: center; color: var(--bg); background: var(--gold); clip-path: polygon(50% 0, 90% 17%, 100% 58%, 68% 100%, 32% 100%, 0 58%, 10% 17%); font: 600 15px "DM Mono", monospace; }
+.threshold-brand strong, .threshold-brand small { display: block; }
+.threshold-brand strong { color: #dfead9; font: 500 11px "DM Mono", monospace; letter-spacing: .16em; }
+.threshold-brand small { margin-top: 4px; color: var(--faint); font: 8px "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.threshold-location { justify-content: center; gap: 8px; color: var(--gold); font: 500 10px "DM Mono", monospace; letter-spacing: .12em; text-transform: uppercase; }
+.threshold-location small { color: var(--faint); font-size: 8px; letter-spacing: .04em; }
+.status-dot { display: inline-block; width: 6px; height: 6px; flex: none; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(116, 207, 136, .13); }
+.threshold-account { justify-content: flex-end; gap: 14px; }
+.threshold-profile { gap: 9px; padding: 0 14px 0 0; color: var(--ink); border: 0; border-right: 1px solid var(--line); background: transparent; text-align: left; }
+.threshold-profile strong, .threshold-profile small { display: block; }
+.threshold-profile strong { max-width: 140px; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.threshold-profile small { margin-top: 3px; color: var(--muted); font: 8px "DM Mono", monospace; text-transform: uppercase; }
+.threshold-avatar { display: grid; width: 31px; height: 31px; place-items: center; border: 1px solid; border-radius: 9px; background: rgba(46, 72, 50, .5); font: 600 11px "DM Mono", monospace; }
+.threshold-wallet { gap: 7px; color: var(--gold); font: 500 10px "DM Mono", monospace; }
+.threshold-wallet span { display: inline-flex; align-items: center; gap: 5px; padding: 7px 8px; border: 1px solid var(--line); background: rgba(5, 13, 8, .35); }
+.threshold-wallet span:last-child { color: var(--cyan); }
+.threshold-nav { display: flex; align-items: center; gap: 7px; padding: 16px 0 0; }
+.threshold-nav button { gap: 7px; padding: 7px 10px; color: var(--muted); border: 1px solid transparent; background: transparent; font: 500 9px "DM Mono", monospace; letter-spacing: .06em; text-transform: uppercase; }
+.threshold-nav button:hover, .threshold-nav button:focus-visible, .threshold-nav button.active { color: var(--gold); border-color: rgba(241, 207, 107, .28); background: rgba(241, 207, 107, .05); }
+.threshold-nav button.active { box-shadow: inset 0 -2px var(--gold); }
+.threshold-nav button span { display: grid; width: 16px; height: 16px; place-items: center; border-radius: 50%; color: var(--bg); background: var(--gold); font-size: 8px; }
+.threshold-nav-season { margin-left: auto; color: var(--cyan) !important; }
+.threshold-content { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(330px, .65fr); gap: 62px; padding: 52px 3.8% 0; }
+.threshold-hero { min-width: 0; }
+.threshold-eyebrow, .rail-heading > div > span, .utility-heading > span { display: flex; align-items: center; gap: 9px; color: var(--gold); font: 500 9px "DM Mono", monospace; letter-spacing: .16em; text-transform: uppercase; }
+.threshold-eyebrow i { display: block; width: 29px; height: 1px; background: var(--gold); opacity: .55; }
+.threshold-hero h1 { max-width: 630px; margin: 17px 0 14px; color: #f1f5ea; font-size: clamp(56px, 7.8vw, 112px); font-weight: 600; line-height: .88; letter-spacing: -.08em; }
+.threshold-hero h1 em { color: var(--green); font-style: normal; }
+.threshold-lede { max-width: 445px; margin: 0; color: #acbca9; font-size: 12px; line-height: 1.65; }
+.threshold-hero-actions { display: flex; align-items: center; gap: 19px; margin-top: 25px; }
+.threshold-primary { display: inline-flex; align-items: center; gap: 25px; padding: 13px 16px 13px 19px; color: #10170f; border: 0; background: var(--gold); box-shadow: 0 4px 0 rgba(128, 104, 33, .45); font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; transition: transform .18s ease, background-color .18s ease; }
+.threshold-primary:hover, .threshold-primary:focus-visible { background: #ffe08b; transform: translateY(-2px); }
+.threshold-text-button { display: inline-flex; align-items: center; gap: 5px; padding: 6px 0; color: var(--cyan); border: 0; border-bottom: 1px solid rgba(131, 220, 232, .7); background: transparent; font: 500 10px "DM Mono", monospace; }
+.threshold-text-button:hover { color: #e1fbff; }
+.threshold-map { position: relative; min-height: 310px; margin-top: 43px; overflow: hidden; border: 1px solid rgba(137, 182, 136, .28); background: linear-gradient(130deg, rgba(29, 67, 42, .48), rgba(10, 23, 17, .72)); }
+.map-grid { position: absolute; inset: 0; opacity: .36; background-image: linear-gradient(rgba(122, 170, 126, .09) 1px, transparent 1px), linear-gradient(90deg, rgba(122, 170, 126, .09) 1px, transparent 1px); background-size: 34px 34px; transform: rotate(-7deg) scale(1.2); }
+.map-rings { position: absolute; top: 17%; right: 12%; width: 120px; height: 120px; border: 1px solid rgba(131, 220, 232, .18); border-radius: 50%; box-shadow: 0 0 0 15px rgba(131, 220, 232, .035), 0 0 0 35px rgba(131, 220, 232, .035); }
+.map-rings::after { position: absolute; inset: 29px; border: 1px dashed rgba(131, 220, 232, .23); border-radius: 50%; content: ""; }
+.map-label { position: absolute; color: #abc0aa; font: 8px "DM Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.map-label-forest { top: 26%; left: 11%; }.map-label-ice { top: 14%; left: 56%; }.map-label-cinder { bottom: 19%; left: 67%; }.map-label-village { top: 50%; left: 39%; color: var(--gold); }
+.map-route { position: absolute; z-index: 2; display: block; border: 1px dashed var(--cyan); border-width: 0 0 1px 1px; border-radius: 0 0 0 90%; opacity: .78; }
+.map-route-a { top: 35%; left: 19%; width: 50%; height: 38%; transform: rotate(-7deg); }.map-route-b { top: 32%; left: 45%; width: 33%; height: 26%; border-color: rgba(241, 207, 107, .7); transform: rotate(23deg); }
+.map-node { position: absolute; z-index: 3; display: grid; width: 24px; height: 24px; place-items: center; padding: 0; color: var(--bg); border: 1px solid var(--gold); border-radius: 50%; background: var(--gold); font: 700 8px "DM Mono", monospace; transition: transform .18s ease, background-color .18s ease; }
+.map-node:hover, .map-node:focus-visible { background: #fff0ae; transform: scale(1.13); }
+.map-node svg { position: absolute; width: 11px; height: 11px; color: var(--bg); }
+.map-node svg + span { opacity: 0; }.node-village { top: 48%; left: 40%; }.node-forest { top: 27%; left: 19%; }.node-ice { top: 14%; left: 72%; background: var(--cyan); border-color: var(--cyan); }.node-cinder { bottom: 15%; left: 71%; background: transparent; color: var(--cyan); border-color: var(--cyan); }
+.map-compass { position: absolute; right: 22px; bottom: 27px; display: grid; width: 44px; height: 44px; place-items: center; color: var(--muted); border: 1px solid rgba(168, 191, 165, .43); border-radius: 50%; font: 8px "DM Mono", monospace; }
+.map-compass::before, .map-compass::after { position: absolute; content: ""; background: rgba(241, 207, 107, .7); }.map-compass::before { width: 1px; height: 27px; }.map-compass::after { width: 27px; height: 1px; background: rgba(131, 220, 232, .65); }.map-compass span { position: absolute; top: -14px; color: var(--gold); }
+.map-compass i { display: block; width: 4px; height: 4px; z-index: 2; border-radius: 50%; background: var(--gold); }
+.map-caption { position: absolute; right: 17px; bottom: 16px; display: grid; gap: 3px; color: var(--faint); font: 8px "DM Mono", monospace; text-align: right; text-transform: uppercase; }.map-caption strong { color: var(--cyan); font-weight: 500; }
+.threshold-rail { min-width: 0; padding-top: 17px; }
+.rail-heading { display: flex; align-items: end; justify-content: space-between; gap: 15px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }.rail-heading h2 { margin: 7px 0 0; color: #e7f0e2; font-size: 25px; line-height: 1; letter-spacing: -.055em; }.rail-heading > strong { color: var(--gold); font: 500 12px "DM Mono", monospace; }.rail-heading > strong small { color: var(--faint); font-size: 9px; }
+.mission-list { display: grid; gap: 9px; margin-top: 14px; }.mission-tile { position: relative; display: block; min-height: 125px; padding: 15px 16px 13px; overflow: hidden; color: var(--ink); border: 1px solid var(--line); border-left: 3px solid var(--gold); background: var(--panel); text-align: left; transition: transform .18s ease, border-color .18s ease, background-color .18s ease; }.mission-tile:hover, .mission-tile:focus-visible, .mission-tile.selected { border-color: rgba(241, 207, 107, .7); background: rgba(26, 47, 31, .9); transform: translateX(4px); }.mission-tile.cyan { border-left-color: var(--cyan); }.mission-tile.violet { border-left-color: #c9a6e7; }.mission-tile.cyan.selected { border-color: rgba(131, 220, 232, .75); }.mission-tile::after { position: absolute; right: -35px; bottom: -44px; width: 125px; height: 125px; border: 1px solid rgba(131, 220, 232, .1); border-radius: 50%; content: ""; }
+.mission-topline { display: flex; justify-content: space-between; gap: 8px; color: var(--gold); font: 8px "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }.mission-tile.cyan .mission-topline { color: var(--cyan); }.mission-tile.violet .mission-topline { color: #c9a6e7; }.mission-topline i { color: var(--muted); font-style: normal; letter-spacing: 0; }
+.mission-tile strong { display: block; margin-top: 9px; color: #edf4e6; font-size: 18px; line-height: 1.04; letter-spacing: -.04em; }.mission-tile small { display: block; max-width: 260px; margin-top: 7px; color: var(--muted); font: 9px/1.45 "DM Mono", monospace; }
+.mission-progress { display: block; height: 3px; margin-top: 13px; overflow: hidden; background: rgba(211, 231, 198, .12); }.mission-progress i { display: block; height: 100%; background: var(--gold); }.mission-tile.cyan .mission-progress i { background: var(--cyan); }.mission-tile.violet .mission-progress i { background: #c9a6e7; }
+.rail-reward { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--line); }.rail-reward span { color: var(--muted); font: 8px "DM Mono", monospace; }.rail-reward strong { color: var(--green); font-size: 10px; text-align: right; }.rail-status { gap: 7px; margin-top: 24px; color: var(--faint); font: 8px "DM Mono", monospace; }.rail-status strong { color: #a3baa3; font-weight: 500; }
+.threshold-footer { justify-content: space-between; gap: 16px; margin-top: 43px; padding-top: 14px; color: var(--faint); border-top: 1px solid var(--line); font: 8px "DM Mono", monospace; }.threshold-footer > span { display: inline-flex; align-items: center; gap: 7px; }.threshold-footer i { display: inline-block; width: 3px; height: 3px; margin: 0 2px; border-radius: 50%; background: var(--faint); }.threshold-footer button { padding: 0; color: var(--green); border: 0; background: transparent; font: inherit; }
+.threshold-footer-mark { display: inline-block; width: 7px; height: 7px; border: 1px solid var(--green); border-radius: 50%; }
+.threshold-utility { max-width: 840px; margin: 0 auto; padding: 78px 4% 0; }.utility-heading h1 { margin: 11px 0 8px; color: #eff5e9; font-size: clamp(42px, 6vw, 72px); line-height: .92; letter-spacing: -.07em; }.utility-heading p { max-width: 490px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }.utility-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; margin-top: 36px; }.utility-card { position: relative; min-height: 158px; padding: 17px; border: 1px solid var(--line); background: var(--panel); }.utility-card-wide { grid-row: span 2; }.utility-card > span { color: var(--gold); font: 8px "DM Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }.utility-card strong { display: block; margin-top: 17px; color: #edf4e6; font-size: 23px; letter-spacing: -.04em; }.utility-card strong b { color: var(--gold); font: 11px "DM Mono", monospace; }.utility-card small { display: block; margin-top: 8px; color: var(--muted); font: 9px/1.5 "DM Mono", monospace; }.utility-bar { height: 4px; margin-top: 30px; background: rgba(209, 230, 201, .1); }.utility-bar i { display: block; height: 100%; background: var(--cyan); }.item-line { display: flex; align-items: center; gap: 5px; margin-top: 22px; color: var(--cyan); }.item-line i { display: block; width: 30px; height: 3px; background: var(--gold); }.item-line i:last-child { opacity: .28; }
+.threshold-modal { position: fixed; z-index: 30; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(2, 7, 4, .78); }.roster-panel { position: relative; width: min(660px, 100%); padding: 28px 30px 24px; border: 1px solid rgba(241, 207, 107, .38); background: #101c14; box-shadow: 12px 14px 0 rgba(2, 8, 4, .34); }.roster-close { position: absolute; top: 16px; right: 16px; display: grid; width: 29px; height: 29px; place-items: center; color: var(--muted); border: 0; background: transparent; }.roster-panel h2 { margin: 8px 0 6px; color: var(--ink); font-size: 31px; line-height: 1; letter-spacing: -.06em; }.roster-panel > p { max-width: 480px; margin: 0 0 21px; color: var(--muted); font-size: 11px; line-height: 1.55; }.roster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }.roster-grid button { position: relative; min-height: 136px; padding: 12px 10px; color: var(--ink); border: 1px solid var(--line); background: rgba(20, 38, 25, .7); text-align: left; }.roster-grid button:hover, .roster-grid button:focus-visible, .roster-grid button.selected { border-color: var(--gold); background: rgba(74, 79, 37, .34); }.roster-initial { display: grid; width: 30px; height: 30px; place-items: center; margin-bottom: 12px; border: 1px solid; border-radius: 8px; font: 600 11px "DM Mono", monospace; }.roster-grid strong, .roster-grid small { display: block; }.roster-grid strong { min-height: 29px; font-size: 10px; line-height: 1.25; }.roster-grid small { margin-top: 5px; color: var(--muted); font: 8px/1.35 "DM Mono", monospace; }.roster-check { position: absolute; top: 11px; right: 9px; color: var(--gold); }.roster-stats { display: flex; gap: 22px; margin-top: 21px; padding-top: 14px; border-top: 1px solid var(--line); }.roster-stats span { display: grid; gap: 4px; color: var(--muted); font: 8px "DM Mono", monospace; text-transform: uppercase; }.roster-stats strong { color: var(--ink); font: 500 15px "Space Grotesk", sans-serif; text-transform: none; }
+.threshold-notice { position: fixed; z-index: 40; right: 22px; bottom: 22px; display: flex; align-items: center; gap: 9px; max-width: 330px; padding: 12px 15px; color: #eaf3e7; border: 1px solid rgba(131, 220, 232, .28); background: #12221a; box-shadow: 5px 5px 0 rgba(3, 10, 5, .3); font: 10px "DM Mono", monospace; animation: threshold-rise .2s ease both; }
+@keyframes threshold-rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 980px) {
+  .threshold-shell { padding: 22px 27px 20px; }.threshold-content { gap: 30px; padding-right: 0; padding-left: 0; }.threshold-hero h1 { font-size: clamp(55px, 9vw, 88px); }
+}
+@media (max-width: 740px) {
+  .threshold-shell { padding: 16px 17px 20px; }.threshold-topbar { grid-template-columns: 1fr auto; }.threshold-location { display: none; }.threshold-account { gap: 8px; }.threshold-profile { padding-right: 0; border-right: 0; }.threshold-profile > span:nth-child(2), .threshold-profile > svg, .threshold-wallet { display: none; }.threshold-nav { flex-wrap: wrap; gap: 4px; }.threshold-nav-season { width: 100%; margin: 4px 0 0; padding-left: 10px !important; justify-content: flex-start; }.threshold-content { display: block; padding-top: 48px; }.threshold-hero h1 { font-size: clamp(57px, 17vw, 91px); }.threshold-map { min-height: 244px; margin-top: 35px; }.threshold-rail { padding-top: 43px; }.threshold-footer { align-items: flex-start; flex-direction: column; margin-top: 36px; }.threshold-utility { padding-top: 55px; }.roster-panel { padding: 25px 18px 20px; }.roster-grid { grid-template-columns: repeat(2, 1fr); }.roster-stats { gap: 13px; flex-wrap: wrap; }.threshold-notice { right: 15px; bottom: 15px; left: 15px; max-width: none; }
+}
+@media (max-width: 410px) {
+  .threshold-brand strong { font-size: 9px; }.threshold-brand small { font-size: 7px; }.threshold-hero-actions { align-items: stretch; flex-direction: column; gap: 14px; }.threshold-primary { justify-content: space-between; }.utility-grid { display: block; }.utility-card { margin-top: 9px; }.utility-card-wide { min-height: 158px; }.map-caption { display: none; }
+}

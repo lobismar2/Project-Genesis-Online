@@ -1,0 +1,44 @@
+modules = ["nodejs-24", "python-base-3.13"]
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "api-server-coop-data"
+
+[[workflows.workflow]]
+name = "api-server-coop-data"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm --filter @workspace/api-server run test:ci"
+
+[workflows.workflow.metadata]
+isValidation = true
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
+packages = ["freetype", "gumbo", "harfbuzz", "jbig2dec", "libjpeg_turbo", "mupdf", "openjpeg", "swig", "xcbuild", "glib", "nss", "nspr", "atk", "at-spi2-atk", "cups", "dbus", "expat", "fontconfig", "gdk-pixbuf", "pango", "cairo", "xorg.libX11", "xorg.libXcomposite", "xorg.libXdamage", "xorg.libXext", "xorg.libXfixes", "xorg.libXrandr", "xorg.libxcb", "xorg.libXi", "xorg.libXrender", "xorg.libXtst", "xorg.libXScrnSaver", "mesa", "alsa-lib", "libgbm", "libxkbcommon", "gst_all_1.gstreamer", "gtk4", "vulkan-loader", "graphene", "icu", "libxml2", "sqlite", "libxslt", "lcms2", "libevent", "libopus", "flite", "libavif", "libepoxy", "libjpeg", "wayland", "libsecret", "libglvnd", "x264", "gst_all_1.gst-plugins-base", "gst_all_1.gst-plugins-good", "gst_all_1.gst-plugins-bad", "gst_all_1.gst-libav", "libmanette", "enchant", "icu74", "libgcc", "hyphen"]

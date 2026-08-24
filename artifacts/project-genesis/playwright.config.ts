@@ -1,46 +1,39 @@
-import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  testMatch: '**/*.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [['list']],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://127.0.0.1:4173/',
     trace: 'on-first-retry',
   },
-
   projects: [
     {
       name: 'chromium-mobile',
       use: {
-        ...devices['Pixel 5'],
-        launchArgs: ['--no-sandbox'],
-        executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-      },
-    },
-    {
-      name: 'chromium-desktop',
-      use: {
-        ...devices['Desktop Chrome'],
-        launchArgs: ['--no-sandbox'],
-        executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+        browserName: 'chromium',
+        viewport: { width: 360, height: 740 },
+        isMobile: true,
+        hasTouch: true,
       },
     },
     {
       name: 'webkit-mobile',
-      use: { ...devices['iPad Pro'] },
+      use: {
+        browserName: 'webkit',
+        viewport: { width: 360, height: 740 },
+        isMobile: true,
+        hasTouch: true,
+      },
     },
   ],
-
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: 'BASE_PATH=/ PORT=4173 pnpm dev',
+    url: 'http://127.0.0.1:4173/',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 120_000,
   },
 });
