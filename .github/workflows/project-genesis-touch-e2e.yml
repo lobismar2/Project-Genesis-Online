@@ -32,7 +32,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.4.1
+          version: 10.33.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -64,7 +64,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.4.1
+          version: 10.33.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -74,6 +74,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build workspace libraries
+        # api-server references @workspace/api-zod as a composite project, so
+        # its declarations have to exist before this job can typecheck.
+        run: pnpm run typecheck:libs
 
       - name: Typecheck cooperative API
         run: pnpm --filter @workspace/api-server run typecheck
@@ -93,7 +98,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.4.1
+          version: 10.33.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -137,7 +142,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.4.1
+          version: 10.33.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

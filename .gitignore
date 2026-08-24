@@ -50,3 +50,8 @@ Thumbs.db
 
 # Runtime campaign snapshots
 /artifacts/api-server/data/
+
+# Playwright output
+test-results
+playwright-report
+blob-report
