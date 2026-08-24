@@ -1,0 +1,499 @@
+PROJECT GENESIS — BRIEF DE FRAMES DE SPRITES v0.1
+Documento de produção para a IA/artista que vai completar o anexo project-genesis-sprites-v0.1.zip.
+
+IMPORTANTE
+O anexo atual contém apenas portraits/ícones:
+- 8 personagens: portrait + icon.
+- 4 NPCs: portrait.
+- As pastas de animação e as pastas de inimigos, habilidades, itens, tiles, objetos, efeitos e HUD estão vazias.
+Este documento define exatamente quais frames devem ser criados e o que cada frame deve fazer.
+
+PADRÃO TÉCNICO GLOBAL
+- PNG RGBA transparente.
+- Pixel art nítido, sem blur, anti-aliasing ou suavização.
+- Não mudar a aparência dos portraits existentes.
+- Direções: south, east, north, west. O eixo sul é a vista frontal.
+- Manter os pés no mesmo ponto em todos os frames.
+- Cada frame deve ter a mesma largura/altura dentro do seu conjunto.
+- Entregar manifest.json com frameWidth, frameHeight, columns, rows, estados, direções e FPS.
+- Não usar o frame de ataque como idle nem o de morte como hurt.
+- Cada animação precisa ter um ponto claro de começo, ação e fim.
+
+============================================================
+1. PERSONAGENS JOGÁVEIS — 8 CONJUNTOS
+============================================================
+
+Criar para CADA ID:
+characters/<id>/idle/
+characters/<id>/walk/
+characters/<id>/attack/
+characters/<id>/hurt/
+characters/<id>/dead/
+characters/<id>/portrait/
+characters/<id>/icon/
+
+O portrait e o icon já existentes devem ser mantidos. Criar os frames abaixo.
+
+ESTRUTURA PADRÃO DE CADA CLASSE
+
+IDLE — 4 frames por direção
+- idle_01: pose neutra, personagem parado.
+- idle_02: respiração/pequeno movimento de corpo.
+- idle_03: retorno da respiração, tecido/folhas/energia se movem.
+- idle_04: volta à pose neutra.
+Função: usar quando o jogador está parado; deve repetir em loop suave.
+
+WALK — 8 frames por direção
+- walk_01: pé inicial levantando.
+- walk_02: primeiro passo.
+- walk_03: corpo passando pelo centro.
+- walk_04: segundo pé avançando.
+- walk_05: maior abertura das pernas.
+- walk_06: segundo pé tocando o chão.
+- walk_07: corpo passando pelo centro novamente.
+- walk_08: retorno ao início do ciclo.
+Função: movimento normal pelo mapa. O centro do corpo e os pés não podem “pular”.
+
+ATTACK — 6 frames por direção
+- attack_01: preparação; personagem reconhece o alvo.
+- attack_02: recuo/armamento; arma ou energia ganha força.
+- attack_03: início do golpe; arma sai da posição.
+- attack_04: impacto ativo; este é o frame usado para aplicar dano/efeito.
+- attack_05: recuperação; arma retorna.
+- attack_06: volta à pose de combate.
+Função: ataque básico. O frame 04 deve coincidir com o hitbox.
+
+HURT — 3 frames, preferencialmente por direção
+- hurt_01: impacto recebido, corpo inclina.
+- hurt_02: reação máxima, brilho vermelho/branco curto.
+- hurt_03: recuperação para voltar ao controle.
+Função: feedback de dano; não deve parecer morte.
+
+DEAD — 6 frames, preferencialmente por direção
+- dead_01: perde equilíbrio.
+- dead_02: começa a cair.
+- dead_03: queda principal.
+- dead_04: corpo no chão.
+- dead_05: brilho/poeira/energia de derrota.
+- dead_06: pose final legível.
+Função: permanecer visível até o sistema concluir a derrota.
+
+CLASSE moss — Colosso de Musgo
+Visual: grande criatura vegetal, casca, musgo e raízes.
+- Ataque básico: golpe pesado de braço/raiz.
+- attack_03 deve mostrar o braço/raiz recuando.
+- attack_04 deve mostrar a raiz ou punho acertando.
+- Efeito associado: folhas e poeira verde.
+- root: raízes saindo do chão e prendendo.
+- slam: impacto circular no chão.
+- bark: casca formando escudo.
+- forest: raízes e cura em área.
+
+CLASSE thorn — Espreitador de Espinhos
+Visual: caçador/arqueiro vegetal, espinhos e detalhes rosa.
+- Ataque básico: disparo de flecha/espinho.
+- attack_02 deve mostrar o arco/arma tensionado.
+- attack_04 deve mostrar o disparo saindo.
+- Efeito associado: projétil rosa e pétalas/espinhos.
+- volley: vários projéteis em sequência.
+- snare: armadilha vegetal no chão.
+- venom: projétil com veneno verde.
+- bramble: círculo de espinhos em área.
+
+CLASSE spore — Tecelão de Esporos
+Visual: criatura fúngica, cogumelos, brilho roxo.
+- Ataque básico: projétil de esporo.
+- attack_04 deve mostrar o esporo deixando a mão/catalisador.
+- Efeito associado: partículas roxas e verdes.
+- sporebolt: projétil corrosivo.
+- cloud: nuvem venenosa.
+- mend: partículas de regeneração.
+- bloom: grande nuvem tóxica.
+
+CLASSE mother — Guardião Raiz
+Visual: guardião ancestral, raízes, seiva e tons naturais.
+- Ataque básico: chicote de vinha.
+- attack_03 deve estender a vinha.
+- attack_04 deve mostrar o contato com o alvo.
+- Efeito associado: folhas e seiva verde-clara.
+- vine: puxa/golpeia o alvo.
+- ward: broto que vira barreira.
+- pulse: onda de cura para aliados.
+- grove: santuário circular de proteção.
+
+CLASSE tungsten — Vanguarda de Tungstênio
+Visual: tanque industrial, armadura pesada, metal ciano.
+- Ataque básico: golpe de arma/escudo.
+- attack_02 deve mostrar o peso e a preparação.
+- attack_04 deve ter faísca metálica no impacto.
+- Efeito associado: faíscas ciano e fumaça industrial.
+- bash: impacto que atordoa.
+- guard: postura defensiva.
+- magnet: campo que puxa inimigos.
+- fortress: escudo/fortaleza e invulnerabilidade breve.
+
+CLASSE neon — Lâmina Neon
+Visual: duelista ágil, lâminas luminosas verde-neon.
+- Ataque básico: corte rápido.
+- attack_03 deve mostrar a lâmina em movimento.
+- attack_04 deve deixar rastro luminoso.
+- Efeito associado: afterimage e linha verde.
+- dash: avanço com corte.
+- parry: postura de defesa/reflexão.
+- flurry: três cortes rápidos.
+- afterimage: golpe devastador com cópia de movimento.
+
+CLASSE hex — Artilheiro Hex
+Visual: atirador tecnológico, energia laranja.
+- Ataque básico: disparo de arma.
+- attack_02 deve mostrar mira/recuo.
+- attack_04 deve mostrar o projétil saindo.
+- Efeito associado: projétil laranja e pequena explosão.
+- shot: projétil preciso.
+- mine: mina no chão e detonação.
+- overclock: sobrecarga de energia no corpo/arma.
+- barrage: chuva de projéteis orbital.
+
+CLASSE bio — Engenheiro Biossonda
+Visual: artífice biocibernético, drone e energia turquesa.
+- Ataque básico: disparo/ação do dispositivo.
+- attack_02 deve mostrar o dispositivo ativando.
+- attack_04 deve mostrar o pulso saindo.
+- Efeito associado: linhas técnicas, drone e energia turquesa.
+- drone: drone auxiliar.
+- patch: reparo com nanomáquinas.
+- shock: pulso EMP.
+- singularity: colapso gravitacional.
+
+============================================================
+2. INIMIGOS — 9 INIMIGOS COMUNS
+============================================================
+
+Para cada inimigo criar:
+enemies/<id>/idle.png ou sheet de 4 frames
+enemies/<id>/walk.png ou sheet de 6 frames
+enemies/<id>/attack.png ou sheet de 5 frames
+enemies/<id>/hurt.png ou sheet de 2 frames
+enemies/<id>/dead.png ou sheet de 5 frames
+enemies/<id>/portrait.png
+enemies/<id>/icon.png
+
+Para humanoides usar 4 direções. Para criaturas pequenas, uma direção com espelhamento só pode ser usada se a silhueta não perder identidade.
+
+PADRÃO DE INIMIGO
+- idle_01 a idle_04: respiração, balanço ou asas.
+- walk_01 a walk_06: ciclo de deslocamento.
+- attack_01: preparação.
+- attack_02: avanço/carga/armamento.
+- attack_03: frame ativo de dano ou disparo.
+- attack_04: recuperação.
+- attack_05: retorno ao idle.
+- hurt_01/02: impacto e recuperação.
+- dead_01 a dead_05: queda, colapso e pose final.
+
+rat — Rato-pardo
+- Pequeno, marrom, quatro patas.
+- walk deve mostrar corrida baixa.
+- attack_03: mordida/investida ativa.
+- dead: tombar de lado.
+- Uso: floresta, inimigo fraco e rápido.
+
+crab — Caranguejo
+- Casco vermelho, pinças grandes.
+- walk alterna deslocamento lateral.
+- attack_03: pinça fechando.
+- dead: virar o casco ou cair.
+- Uso: praia.
+
+bat — Morcego
+- Silhueta roxa, asas bem separadas.
+- idle deve bater asas.
+- walk deve ser voo oscilante.
+- attack_03: pulso/projétil sonoro.
+- dead: asa perde força e cai.
+- Uso: caverna, ataque à distância.
+
+goblin — Goblin
+- Humanoide verde, pequeno e agressivo.
+- walk com corrida inclinada.
+- attack_03: arma acertando.
+- dead: queda para trás.
+- Uso: território hostil, investida.
+
+skeleton — Esqueleto
+- Ossos claros, arma/projétil de osso ou magia.
+- walk com balanço irregular.
+- attack_03: projétil sai da mão/arma.
+- dead: ossos desmontam.
+- Uso: cemitério, ataque à distância.
+
+snake — Serpente
+- Corpo comprido, cabeça legível.
+- walk deve ser ondulação do corpo.
+- attack_03: bote com cabeça avançada.
+- dead: corpo enrola e perde movimento.
+- Uso: deserto, investida.
+
+ogre — Ogro
+- Grande, largo, pesado.
+- walk lento com peso visual.
+- attack_03: golpe de grande alcance.
+- dead: queda pesada e poeira.
+- Uso: inimigo resistente.
+
+spectre — Espectro
+- Fantasma translúcido azul/lilás.
+- idle flutua.
+- walk desliza sem passos.
+- attack_03: projétil ou onda espectral.
+- dead: dissolve em fumaça.
+- Uso: cemitério, ataque à distância.
+
+deathknight — Cavaleiro da Morte
+- Humanoide grande, armadura escura e arma pesada.
+- walk com passos lentos e capa.
+- attack_03: golpe de arma.
+- dead: ajoelha e cai.
+- Uso: montanhas, elite corpo a corpo.
+
+============================================================
+3. REI ESQUELETO — CHEFE EM 3 FASES
+============================================================
+
+Criar conjunto próprio:
+enemies/boss_rei_esqueleto/phase1/
+enemies/boss_rei_esqueleto/phase2/
+enemies/boss_rei_esqueleto/phase3/
+
+Para CADA fase:
+- idle: 6 frames.
+- walk: 8 frames.
+- attack_melee: 8 frames.
+- attack_ranged: 8 frames.
+- summon: 10 frames.
+- hurt: 3 frames.
+- dead: 10 frames somente na fase final.
+- phase_change: 12 frames.
+- entrada/intro: 12 frames.
+- portrait e icon.
+
+FASE 1
+- idle_01–06: respiração, manto e aura discreta.
+- walk_01–08: passos de rei, arma visível.
+- attack_melee_01–08: preparação, golpe, impacto no frame 05, recuperação.
+- attack_ranged_01–08: levanta a mão/arma, cria magia, dispara no frame 05.
+- summon_01–10: abre energia no chão e invoca lacaios.
+- Visual: coroa e aura dourada discreta.
+
+FASE 2
+- Mesma leitura de poses, mas com armadura/energia alterada.
+- walk deve parecer mais agressivo.
+- attack_melee deve incluir investida.
+- attack_ranged deve ser mais amplo.
+- phase_change_01–12: quebra/transformação da armadura e explosão de energia.
+- Visual: aura dourada com vermelho e rachaduras de energia.
+
+FASE 3
+- idle com aura forte e partículas.
+- walk com sombra/rastro.
+- melee com arma ampliada.
+- ranged com projéteis múltiplos.
+- summon com círculo grande.
+- dead_01–10: derrota longa, queda da coroa, colapso e explosão final.
+- Visual: forma final dourada, vermelha e preta.
+
+============================================================
+4. NPCS — 4 CONJUNTOS
+============================================================
+
+Para cada NPC:
+npcs/<id>/idle/
+npcs/<id>/portrait.png
+npcs/<id>/icon.png
+npcs/<id>/quest_available.png
+npcs/<id>/quest_ready.png
+
+Idle: 4 frames por direção.
+- idle_01: pose neutra.
+- idle_02: respiração.
+- idle_03: pequeno gesto próprio do NPC.
+- idle_04: retorno.
+
+guide — Guardião da Árvore-Mãe
+- Gesto: levanta cajado/mão ou folhas se movem.
+- quest_available: marcador de missão amarelo.
+- quest_ready: marcador de entrega verde/dourado.
+
+elder — Ancião da Floresta
+- Gesto: apoia-se no cajado ou consulta um tomo.
+- Visual: sábio natural.
+
+smith — Ferreiro do Consórcio
+- Gesto: martelo, faísca ou ferramenta.
+- Visual: oficina, metal e tecnologia.
+
+sentry — Sentinela Neon
+- Gesto: verifica arma ou faz saudação curta.
+- Visual: guarda futurista, armadura neon.
+
+============================================================
+5. HABILIDADES — ÍCONE E EFEITO
+============================================================
+
+Para cada uma das 32 habilidades:
+- icon/<id>.png: ícone estático 32×32 ou 48×48.
+- effects/<id>.png ou sheet: animação de 6–12 frames.
+- Frame 01: surgimento/preparação.
+- Frames 02–04: deslocamento ou formação.
+- Frame 05: impacto/efeito ativo.
+- Frames finais: dissipação.
+
+Lista:
+root, slam, bark, forest, volley, snare, venom, bramble,
+sporebolt, cloud, mend, bloom, vine, ward, pulse, grove,
+bash, guard, magnet, fortress, dash, parry, flurry, afterimage,
+shot, mine, overclock, barrage, drone, patch, shock, singularity.
+
+Regras:
+- strike: mostrar direção do corte/projétil.
+- burst: mostrar raio circular e impacto.
+- heal: partículas subindo e halo.
+- dash: rastro atrás do personagem.
+- control: prender, puxar, desacelerar ou atordoar claramente.
+- O frame ativo do efeito deve coincidir com o dano/controle real.
+
+============================================================
+6. EQUIPAMENTOS E CONSUMÍVEIS
+============================================================
+
+Criar um ícone estático de 32×32 ou 48×48 para cada:
+
+ARMAS
+sword1 Adaga Prática
+sword2 Espada de Aço
+axe Machado
+morningstar Maça Estrela
+bluesword Lâmina Azul
+redsword Lâmina Rubra
+goldensword Relíquia Solar
+
+ARMADURAS
+clotharmor Traje de Pano
+leatherarmor Couraça de Couro
+mailarmor Cota de Malha
+platearmor Armadura de Placas
+redarmor Armadura Rubra
+goldenarmor Armadura Solar
+chainarmor Cota/armadura referenciada por missão
+
+CONSUMÍVEIS
+flask Frasco de Vida
+firepotion Poção especial de fogo antigo
+
+Criar também:
+- loot genérico;
+- item novo;
+- item equipado;
+- item bloqueado;
+- brilho para comum, incomum, raro, épico e lendário.
+Função: os ícones devem funcionar no HUD, inventário, loot, diário e recompensa.
+
+============================================================
+7. TILES, OBJETOS E DECORAÇÃO
+============================================================
+
+Tiles 32×32:
+grass, grass2, dark, dead, path, water, sand, mountain, lava, safeA, safeC, cave.
+
+Para cada tile criar:
+- centro;
+- borda norte/sul/leste/oeste;
+- quatro cantos;
+- pelo menos 2 variações decorativas quando fizer sentido;
+- transições entre grama, areia, pedra, lava e água.
+
+Objetos:
+- tree: 3–5 variações; tronco, copa e sombra.
+- rock: 3–5 formas/tamanhos.
+- grave: 3–4 lápides, incluindo quebrada.
+- portal: 6–8 frames de pulsação e 8–12 de abertura.
+- cave: entrada rochosa escura, com bordas.
+- firepotion: 6 frames de brilho/flutuação e 4 de coleta.
+
+Decoração:
+- floresta: raízes, arbustos, flores, cogumelos, troncos, cristais.
+- cemitério: ossos, velas, lápides, árvores secas, névoa.
+- caverna: estalactites, cristais, pedras, runas, poças.
+- deserto: ossos grandes, pedras, ruínas, cactos, cinzas.
+- montanhas: pedras negras, lava, brasas, ruínas industriais, sinais.
+- praia: espuma, conchas, pedras costeiras e variações de água.
+
+============================================================
+8. EFEITOS DE COMBATE E HUD
+============================================================
+
+Efeitos gerais, 6–12 frames cada:
+- ataque melee;
+- corte horizontal;
+- corte vertical;
+- golpe pesado;
+- projétil;
+- impacto;
+- dano;
+- dano crítico;
+- cura;
+- escudo/barreira;
+- invencibilidade;
+- stun;
+- slow;
+- poison;
+- fogo;
+- morte comum;
+- morte do chefe;
+- coleta;
+- subida de nível;
+- habilidade desbloqueada;
+- mudança de fase;
+- portal/teleporte.
+
+Ícones de HUD:
+vida, mana/energia, XP, nível, ataque, armadura, poção, alvo, jogador,
+jogador coop, NPC, missão disponível, missão pronta, missão bloqueada,
+missão concluída, diário, conquista, mapa, portal, região, raridades,
+configurações, fechar, voltar, reviver, salvar, online, offline, sala coop,
+jogador conectado, sincronização, joystick, ataque mobile, habilidade 1,
+habilidade 2, habilidade 3 e ultimate.
+
+============================================================
+9. PRIORIDADE DE PRODUÇÃO
+============================================================
+
+1. Completar idle/walk/attack/hurt/dead das 8 classes.
+2. Criar rat, bat, skeleton, snake e deathknight.
+3. Criar Rei Esqueleto nas 3 fases.
+4. Criar ataques, projéteis, dano, cura e morte.
+5. Criar os 4 NPCs.
+6. Criar equipamentos, consumíveis e loot.
+7. Criar tiles, objetos e portais.
+8. Criar crab, goblin, ogre e spectre.
+9. Criar 32 ícones e efeitos de habilidades.
+10. Criar decoração, HUD, cooperação e missão.
+
+============================================================
+10. CRITÉRIOS DE ACEITE
+============================================================
+
+- Nenhum frame tem fundo sólido indevido.
+- Os pés ficam alinhados.
+- O frame ativo de cada ataque está identificado.
+- A caminhada repete sem salto visual.
+- O dano não parece morte.
+- A morte termina em pose reconhecível.
+- As 8 classes mantêm a aparência dos portraits.
+- Os 9 inimigos comuns têm silhuetas diferentes.
+- O chefe tem 3 fases visualmente distintas.
+- Os NPCs são reconhecíveis no minimapa e no diálogo.
+- Todos os IDs correspondem ao manifest.
+- O pacote inclui previews, licença e instruções.
+- Os sprites permanecem legíveis no celular.
+- O fallback do jogo continua funcionando.

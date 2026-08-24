@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Project Genesis"
+description = "Jogo de exploração e combate em Canvas 2D, com progressão por equipamentos, facções, conquistas e chefe final."
+version = "1.0.0"
+id = "artifacts/project-genesis"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25215
+
+[services.development]
+run = "pnpm --filter @workspace/project-genesis run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/project-genesis", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/project-genesis/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25215"
+BASE_PATH = "/"

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Genesis — Especificação de Sprites</title>
+  <style>
+    :root{--bg:#101714;--panel:#18231d;--panel2:#202d25;--text:#e8f0e7;--muted:#a9b8aa;--green:#8ee7a1;--cyan:#8ee7ff;--gold:#ffd76b;--border:#385141}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(135deg,#0d1311,#16231b 55%,#111a20);color:var(--text);font:15px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+    main{max-width:1180px;margin:auto;padding:32px 22px 70px} header{padding:34px 30px;margin-bottom:22px;background:linear-gradient(135deg,#1c3628,#172b35);border:1px solid var(--border);border-radius:16px;box-shadow:0 18px 50px #0005}
+    h1{margin:0 0 8px;color:var(--green);font-size:clamp(28px,5vw,48px);line-height:1.1} h2{margin:38px 0 14px;color:var(--cyan);border-bottom:1px solid var(--border);padding-bottom:8px} h3{color:var(--gold);margin-top:25px}
+    p{color:var(--muted)} a{color:var(--cyan)} code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace} code{color:#d9f59f;background:#0b110e;padding:2px 5px;border-radius:4px}
+    .subtitle{font-size:18px;color:#d4e4d5}.note{padding:14px 16px;border-left:4px solid var(--gold);background:#3a321d;color:#f4e9bd;border-radius:7px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px}.card strong{display:block;color:var(--green);font-size:17px}.card small{color:var(--muted)}
+    table{width:100%;border-collapse:collapse;margin:12px 0 20px;background:#141d18;border:1px solid var(--border);border-radius:8px;overflow:hidden} th,td{text-align:left;vertical-align:top;padding:10px 11px;border-bottom:1px solid #2c4032} th{background:var(--panel2);color:var(--gold)} tr:last-child td{border-bottom:0}
+    ul,ol{color:var(--muted)} li{margin:4px 0} pre{white-space:pre-wrap;background:#0b110e;color:#d9f59f;border:1px solid var(--border);padding:16px;border-radius:8px;overflow:auto}
+    .toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.toc a{padding:7px 10px;border:1px solid var(--border);border-radius:7px;text-decoration:none;background:var(--panel)}
+    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-top:18px}.metric{padding:14px;background:#101a15;border:1px solid var(--border);border-radius:8px;text-align:center}.metric b{display:block;font-size:26px;color:var(--gold)} footer{margin-top:45px;color:var(--muted);border-top:1px solid var(--border);padding-top:16px}
+    @media(max-width:650px){main{padding:16px 12px 45px}header{padding:24px 18px}th,td{padding:8px;font-size:13px}table{display:block;overflow-x:auto;white-space:normal}}
+    @media print{body{background:#fff;color:#111}header,.card,table,pre{box-shadow:none}h1,h2,h3,th{color:#153d2a}p,li,td,footer{color:#222}.toc{display:none}.card,table,pre{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Project Genesis</h1>
+    <div class="subtitle">Especificação completa de sprites para outra IA/artista técnico</div>
+    <p>Produzir os assets sem alterar o combate, o balanceamento, o modo offline ou a cooperação online.</p>
+    <div class="summary">
+      <div class="metric"><b>8</b>personagens</div><div class="metric"><b>10</b>inimigos</div><div class="metric"><b>3</b>fases do chefe</div><div class="metric"><b>4</b>NPCs</div><div class="metric"><b>32</b>habilidades</div><div class="metric"><b>12</b>tiles</div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Índice">
+    <a href="#regras">Regras</a><a href="#classes">Classes</a><a href="#habilidades">Habilidades</a><a href="#inimigos">Inimigos</a><a href="#boss">Chefe</a><a href="#npcs">NPCs</a><a href="#itens">Itens</a><a href="#mundo">Mundo</a><a href="#efeitos">Efeitos</a><a href="#hud">HUD</a><a href="#entrega">Entrega</a>
+  </nav>
+
+  <section id="regras">
+    <h2>1. Regras gerais</h2>
+    <ul>
+      <li>Estilo pixel art dark-fantasy/sci-fi, com floresta, ruínas, cemitério, deserto vulcânico e tecnologia neon.</li>
+      <li>Todos os personagens, inimigos, NPCs, itens e efeitos devem ser PNG RGBA com fundo transparente.</li>
+      <li>Não usar blur, anti-aliasing, suavização ou escalonamento fracionado.</li>
+      <li>Manter pixels inteiros, bordas nítidas e escala visual consistente.</li>
+      <li>Usar nomes de arquivos sem espaços ou acentos.</li>
+      <li>Todo asset precisa de fallback: frame estático ou desenho procedural.</li>
+      <li>Entregar previews, IDs estáveis e licença/autorização de uso comercial.</li>
+    </ul>
+    <p>Estrutura recomendada:</p>
+    <pre>assets/
+  characters/&lt;id&gt;/{idle,walk,attack,hurt,dead,portrait}.png
+  enemies/&lt;id&gt;/{idle,walk,attack,hurt,dead,portrait}.png
+  npcs/&lt;id&gt;/{idle,portrait}.png
+  items/&lt;id&gt;.png
+  effects/&lt;id&gt;.png
+  world/{tileset,objects}.png
+  ui/icons.png</pre>
+    <p>Se forem entregues sheets, incluir <code>manifest.json</code> com <code>frameWidth</code>, <code>frameHeight</code>, colunas, linhas, estados, direções e FPS. Não presumir a grade dos sheets existentes.</p>
+  </section>
+
+  <section id="classes">
+    <h2>2. Personagens jogáveis — prioridade máxima</h2>
+    <p>Cada classe precisa de <code>idle</code> (2–4 frames), <code>walk</code> (6–8 por direção), <code>attack</code> (4–6 por direção), <code>hurt</code> (2–3), <code>dead</code> (4–6), quatro direções (<code>south</code>, <code>east</code>, <code>north</code>, <code>west</code>), portrait, ícone de HUD e efeito próprio da ultimate.</p>
+    <table><thead><tr><th>ID</th><th>Nome / papel</th><th>Fação</th><th>Direção artística</th><th>Habilidades</th></tr></thead><tbody>
+      <tr><td><code>moss</code></td><td>Colosso de Musgo<br>Vanguarda</td><td>Despertos</td><td>Gigante vegetal, casca, musgo e raízes</td><td>root, slam, bark, forest</td></tr>
+      <tr><td><code>thorn</code></td><td>Espreitador de Espinhos<br>Atirador</td><td>Despertos</td><td>Caçador/arqueiro vegetal e espinhos rosa</td><td>volley, snare, venom, bramble</td></tr>
+      <tr><td><code>spore</code></td><td>Tecelão de Esporos<br>Controlador</td><td>Despertos</td><td>Criatura fúngica, cogumelos e partículas</td><td>sporebolt, cloud, mend, bloom</td></tr>
+      <tr><td><code>mother</code></td><td>Guardião Raiz<br>Suporte</td><td>Despertos</td><td>Guardião ancestral, raízes e seiva</td><td>vine, ward, pulse, grove</td></tr>
+      <tr><td><code>tungsten</code></td><td>Vanguarda de Tungstênio<br>Tanque</td><td>Consórcio</td><td>Armadura industrial pesada e metal ciano</td><td>bash, guard, magnet, fortress</td></tr>
+      <tr><td><code>neon</code></td><td>Lâmina Neon<br>Duelista</td><td>Consórcio</td><td>Guerreiro ágil e lâminas verde-neon</td><td>dash, parry, flurry, afterimage</td></tr>
+      <tr><td><code>hex</code></td><td>Artilheiro Hex<br>Atirador</td><td>Consórcio</td><td>Atirador tecnológico e energia laranja</td><td>shot, mine, overclock, barrage</td></tr>
+      <tr><td><code>bio</code></td><td>Engenheiro Biossonda<br>Artífice</td><td>Consórcio</td><td>Engenheiro biocibernético com drone</td><td>drone, patch, shock, singularity</td></tr>
+    </tbody></table>
+    <div class="note"><strong>Sheets já fornecidos:</strong> <code>characters/char-01.png</code> até <code>char-18.png</code> e respectivos ícones. Sheets: 768×1408 px; ícones: 128×128 px. Usar 8 nas classes e reservar 10 para variantes, skins, aliados ou futuros personagens. Confirmar a grade antes do recorte.</div>
+  </section>
+
+  <section id="habilidades">
+    <h2>3. Ícones e efeitos das habilidades</h2>
+    <p>Criar 32 ícones, idealmente 32×32 ou 48×48, e pelo menos um efeito animado para cada:</p>
+    <pre>moss:     root, slam, bark, forest
+thorn:    volley, snare, venom, bramble
+spore:    sporebolt, cloud, mend, bloom
+mother:   vine, ward, pulse, grove
+tungsten: bash, guard, magnet, fortress
+neon:     dash, parry, flurry, afterimage
+hex:      shot, mine, overclock, barrage
+bio:      drone, patch, shock, singularity</pre>
+    <div class="grid">
+      <div class="card"><strong>strike</strong><small>Corte ou projétil.</small></div>
+      <div class="card"><strong>burst</strong><small>Explosão circular ou de área.</small></div>
+      <div class="card"><strong>heal</strong><small>Partículas ascendentes e halo.</small></div>
+      <div class="card"><strong>dash</strong><small>Rastro de movimento.</small></div>
+      <div class="card"><strong>control</strong><small>Raízes, armadilha, ímã, EMP ou atordoamento.</small></div>
+    </div>
+  </section>
+
+  <section id="inimigos">
+    <h2>4. Inimigos — 10</h2>
+    <p>Cada inimigo precisa de <code>idle</code>, <code>walk</code>, <code>attack</code>, <code>hurt</code>, <code>dead</code>, portrait/ícone e efeito de morte. Humanoides devem ter quatro direções quando possível.</p>
+    <table><thead><tr><th>ID</th><th>Nome</th><th>Comportamento</th><th>Visual/local</th></tr></thead><tbody>
+      <tr><td>rat</td><td>Rato-pardo</td><td>Investida</td><td>Pequeno, marrom, floresta</td></tr>
+      <tr><td>crab</td><td>Caranguejo</td><td>Corpo a corpo</td><td>Casco vermelho, praia</td></tr>
+      <tr><td>bat</td><td>Morcego</td><td>À distância</td><td>Asas animadas, caverna</td></tr>
+      <tr><td>goblin</td><td>Goblin</td><td>Investida</td><td>Humanoide verde</td></tr>
+      <tr><td>skeleton</td><td>Esqueleto</td><td>À distância</td><td>Cemitério, osso/magia</td></tr>
+      <tr><td>snake</td><td>Serpente</td><td>Investida</td><td>Rasteja, deserto</td></tr>
+      <tr><td>ogre</td><td>Ogro</td><td>Corpo a corpo</td><td>Grande, lento e resistente</td></tr>
+      <tr><td>spectre</td><td>Espectro</td><td>À distância</td><td>Fantasma translúcido</td></tr>
+      <tr><td>deathknight</td><td>Cavaleiro da Morte</td><td>Corpo a corpo</td><td>Armadura pesada, montanhas</td></tr>
+      <tr><td>boss</td><td>Rei Esqueleto</td><td>Invocador</td><td>Chefe final</td></tr>
+    </tbody></table>
+  </section>
+
+  <section id="boss">
+    <h2>5. Rei Esqueleto — conjunto próprio</h2>
+    <p>Não usar apenas o sprite de esqueleto ampliado. Criar idle, caminhada, ataque corpo a corpo, ataque à distância, summon, hurt, dead, entrada na arena, mudança de fase, ícone, morte grande e três variantes visualmente distintas.</p>
+    <div class="grid">
+      <div class="card"><strong>Fase 1</strong><small>Coroa, ataques básicos e invocação.</small></div>
+      <div class="card"><strong>Fase 2</strong><small>Armadura/energia alterada, agressividade e investida.</small></div>
+      <div class="card"><strong>Fase 3</strong><small>Aura dourada/vermelha, mais partículas e forma final.</small></div>
+    </div>
+  </section>
+
+  <section id="npcs">
+    <h2>6. NPCs — 4</h2>
+    <p>Cada NPC precisa de sprite parado, preferencialmente em quatro direções, 2–4 frames de idle, portrait e indicadores de missão disponível/pronta.</p>
+    <table><thead><tr><th>ID</th><th>Nome</th><th>Fação</th><th>Visual</th></tr></thead><tbody>
+      <tr><td>guide</td><td>Guardião da Árvore-Mãe</td><td>Despertos</td><td>Guia vegetal ligado à árvore</td></tr>
+      <tr><td>elder</td><td>Ancião da Floresta</td><td>Despertos</td><td>Sábio com roupas naturais</td></tr>
+      <tr><td>smith</td><td>Ferreiro do Consórcio</td><td>Consórcio</td><td>Ferreiro tecnológico</td></tr>
+      <tr><td>sentry</td><td>Sentinela Neon</td><td>Consórcio</td><td>Guarda futurista</td></tr>
+    </tbody></table>
+  </section>
+
+  <section id="itens">
+    <h2>7. Equipamentos e loot</h2>
+    <p>Criar ícone individual para HUD, inventário, loot, diário e recompensas.</p>
+    <div class="grid">
+      <div class="card"><strong>Armas — 7</strong><small>sword1 Adaga Prática (comum); sword2 Espada de Aço (incomum); axe Machado (incomum); morningstar Maça Estrela (raro); bluesword Lâmina Azul (raro); redsword Lâmina Rubra (épico); goldensword Relíquia Solar (lendário).</small></div>
+      <div class="card"><strong>Armaduras — 6</strong><small>clotharmor Traje de Pano (comum); leatherarmor Couraça de Couro (incomum); mailarmor Cota de Malha (incomum); platearmor Armadura de Placas (raro); redarmor Armadura Rubra (raro); goldenarmor Armadura Solar (lendário).</small></div>
+      <div class="card"><strong>Consumíveis</strong><small>flask Frasco de Vida; firepotion Poção especial de fogo antigo; loot genérico; estados bloqueado, equipado e novo; halos para cinco raridades.</small></div>
+    </div>
+    <p><strong>Atenção:</strong> verificar também o ID <code>chainarmor</code>, referenciado por uma missão.</p>
+  </section>
+
+  <section id="mundo">
+    <h2>8. Tiles e mundo</h2>
+    <p>O mapa usa tiles de 32×32. Criar tilesheet modular para:</p>
+    <pre>grass, grass2, dark, dead, path, water, sand, mountain, lava, safeA, safeC, cave</pre>
+    <p>Criar bordas, cantos, transições e variações para água, lava, grama, areia, pedra e caminho.</p>
+    <h3>Objetos existentes</h3>
+    <ul>
+      <li><code>tree</code>: 3–5 copas/troncos.</li><li><code>rock</code>: 3–5 tamanhos e formatos.</li>
+      <li><code>grave</code>: 3–4 lápides, inclusive quebradas.</li><li><code>portal</code>: parado, pulsando, abrindo e fechando.</li>
+      <li><code>cave</code>: entrada rochosa escura.</li><li><code>firepotion</code>: brilho, flutuação e coleta.</li>
+    </ul>
+    <h3>Decoração por bioma</h3>
+    <table><thead><tr><th>Bioma</th><th>Elementos recomendados</th></tr></thead><tbody>
+      <tr><td>Floresta</td><td>Raízes, arbustos, flores, cogumelos, troncos e cristais verdes.</td></tr>
+      <tr><td>Cemitério</td><td>Ossos, velas, lápides quebradas, árvores secas e névoa.</td></tr>
+      <tr><td>Caverna</td><td>Estalactites, cristais, pedras, runas e poças.</td></tr>
+      <tr><td>Deserto</td><td>Ossos grandes, pedras secas, ruínas, cactos e cinzas.</td></tr>
+      <tr><td>Montanhas</td><td>Pedras negras, lava, brasas, ruínas industriais e sinais do Consórcio.</td></tr>
+      <tr><td>Praia</td><td>Areia, água, espuma, conchas e pedras costeiras.</td></tr>
+    </tbody></table>
+  </section>
+
+  <section id="efeitos">
+    <h2>9. Efeitos de combate</h2>
+    <p>Criar animações curtas e legíveis no celular:</p>
+    <ul><li>Ataque corpo a corpo, corte horizontal, corte vertical e golpe pesado.</li><li>Projétil e impacto.</li><li>Dano, dano crítico e cura.</li><li>Escudo/barreira e invencibilidade.</li><li>Atordoamento, lentidão, veneno e fogo.</li><li>Morte normal e morte do chefe.</li><li>Coleta, subida de nível e desbloqueio de habilidade.</li><li>Mudança de fase, portal e teleporte.</li></ul>
+    <p><strong>Cores:</strong> Despertos usam verde/rosa/roxo/seiva/esporos; Consórcio usa ciano/verde-neon/laranja/azul elétrico; dano vermelho/laranja; cura verde-claro/ciano; veneno verde-amarelado; controle roxo/azul; chefe dourado/vermelho/preto.</p>
+  </section>
+
+  <section id="hud">
+    <h2>10. HUD e interface</h2>
+    <p>Ícones necessários: vida, mana/energia, XP, nível, ataque, armadura, poção, alvo, jogador, jogador coop, NPC, missão disponível/pronta/bloqueada/concluída, diário, conquista, mapa, portal, região, raridades, configurações, fechar, voltar, reviver, salvar, online, offline, sala coop, jogador conectado, sincronização, joystick, ataque mobile, habilidades 1/2/3 e ultimate.</p>
+    <p>Usar <code>dusk-icons/all.png</code> para ícones compatíveis e <code>pixel-ui/all.png</code> para molduras, painéis, slots, barras e botões.</p>
+  </section>
+
+  <section id="entrega">
+    <h2>11. Animação, entrega e critérios de aceite</h2>
+    <p>Para cada sheet informar tamanho total, largura/altura do frame, colunas/linhas, ordem dos estados e direções, FPS, ponto de ancoragem dos pés, hitbox e se há espelhamento.</p>
+    <ul>
+      <li>Pés alinhados em todos os frames.</li><li>Ataque mostra o instante do impacto.</li><li>Morte permanece legível.</li>
+      <li>Chefe é maior sem bloquear a tela.</li><li>Sprites continuam identificáveis em viewport mobile.</li>
+    </ul>
+    <h3>Entregar</h3>
+    <ol><li>PNGs individuais ou sheets.</li><li>Portraits e ícones.</li><li><code>manifest.json</code>.</li><li>Folha de referência com todas as animações.</li><li>Lista de IDs.</li><li>Licença de uso comercial.</li><li>Preview em fundo quadriculado e fundo escuro.</li></ol>
+    <h3>Ordem de produção</h3>
+    <ol><li>8 classes jogáveis.</li><li>rat, bat, skeleton, snake e deathknight.</li><li>Rei Esqueleto nas 3 fases.</li><li>Ataque, dano, morte, cura e projéteis.</li><li>4 NPCs.</li><li>Equipamentos, consumíveis, tiles e objetos.</li><li>crab, goblin, ogre e spectre.</li><li>32 ícones e efeitos de habilidades.</li><li>Decoração, variações e ícones de cooperação/missões.</li></ol>
+    <h3>Critérios de aceite</h3>
+    <ul><li>8 classes com 5 estados e 4 direções.</li><li>10 inimigos com 5 estados.</li><li>Chefe com 3 fases distintas.</li><li>4 NPCs com sprites, portraits e indicadores.</li><li>Todos os equipamentos, consumíveis, tiles, objetos, efeitos e HUD cobertos.</li><li>Assets legíveis em mobile, transparência correta, manifest, previews, licença e fallback.</li></ul>
+  </section>
+
+  <footer>Project Genesis — documento preparado para produção e integração de assets. Verificar a licença dos pacotes fornecidos antes de publicar ou vender o jogo.</footer>
+</main>
+</body>
+</html>

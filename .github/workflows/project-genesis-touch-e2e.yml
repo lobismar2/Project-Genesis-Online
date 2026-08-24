@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "artifacts/project-genesis/**"
+      - "artifacts/api-server/**"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - ".github/workflows/project-genesis-touch-e2e.yml"
@@ -11,6 +12,7 @@ on:
   pull_request:
     paths:
       - "artifacts/project-genesis/**"
+      - "artifacts/api-server/**"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - ".github/workflows/project-genesis-touch-e2e.yml"
@@ -18,8 +20,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  touch-regression:
-    name: Touch regression (Chromium + WebKit)
+  project-genesis-quality:
+    name: Project Genesis (typecheck + build + unit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck Project Genesis
+        run: pnpm --filter @workspace/project-genesis run typecheck
+
+      - name: Build Project Genesis
+        run: pnpm --filter @workspace/project-genesis run build
+
+      - name: Run Project Genesis unit tests
+        run: pnpm --filter @workspace/project-genesis run test
+
+  api-server-quality:
+    name: Cooperative API (typecheck + tests + healthcheck)
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -41,22 +75,118 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers and system dependencies
-        run: pnpm --filter @workspace/project-genesis exec playwright install --with-deps chromium webkit
+      - name: Typecheck cooperative API
+        run: pnpm --filter @workspace/api-server run typecheck
 
-      - name: Run touch regression in Chromium and WebKit
+      - name: Run cooperative API CI checks
+        run: pnpm --filter @workspace/api-server run test:ci
+
+  chromium-mobile:
+    name: Touch regression (Chromium Mobile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium and system dependencies
+        run: pnpm --filter @workspace/project-genesis exec playwright install --with-deps chromium
+
+      - name: Run touch regression in Chromium Mobile
         run: >
           pnpm --filter @workspace/project-genesis exec playwright test
           e2e/touch-regression.spec.ts
           --project=chromium-mobile
+          --reporter=list
+
+      - name: Upload Chromium Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-genesis-touch-chromium-report
+          path: |
+            artifacts/project-genesis/playwright-report
+            artifacts/project-genesis/test-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+  webkit-mobile:
+    name: Touch regression (WebKit Mobile)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install WebKit and system dependencies
+        run: pnpm --filter @workspace/project-genesis exec playwright install --with-deps webkit
+
+      - name: Verify WebKit browser startup
+        run: |
+          pnpm --filter @workspace/project-genesis exec node --input-type=module - <<'NODE'
+          import { webkit } from '@playwright/test';
+
+          const browser = await webkit.launch();
+          await browser.close();
+          NODE
+
+      - name: Run touch regression in WebKit Mobile
+        id: webkit-tests
+        run: >
+          pnpm --filter @workspace/project-genesis exec playwright test
+          e2e/touch-regression.spec.ts
           --project=webkit-mobile
           --reporter=list
+
+      - name: Summarize WebKit result
+        if: always()
+        env:
+          WEBKIT_OUTCOME: ${{ steps.webkit-tests.outcome }}
+        run: |
+          if [ "$WEBKIT_OUTCOME" = "success" ]; then
+            echo "### WebKit Mobile: PASS" >> "$GITHUB_STEP_SUMMARY"
+            echo "Os dois cenários de regressão de toque passaram no WebKit." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### WebKit Mobile: FAIL" >> "$GITHUB_STEP_SUMMARY"
+            echo "A execução do WebKit falhou. Consulte os logs e o relatório para distinguir falha de inicialização do navegador de falha de interação." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: project-genesis-touch-playwright-report
+          name: project-genesis-touch-webkit-report
           path: |
             artifacts/project-genesis/playwright-report
             artifacts/project-genesis/test-results
