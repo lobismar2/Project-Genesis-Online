@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { nextMapId, sidePassageMapId } from './App';
+import { ACHIEVEMENTS, MISSIONS, nextMapId, sidePassageMapId } from './App';
 
 type MapId = 'hub' | 'forest' | 'cave' | 'ice' | 'volcano';
 
@@ -68,5 +68,49 @@ test('todo mapa de campo é alcançável a partir da vila', () => {
 
   for (const mapId of FIELD_MAPS) {
     assert.ok(reachable.has(mapId), `${mapId} ficou inalcançável pelos portais`);
+  }
+});
+
+test('cada conquista tem um ícone próprio', () => {
+  // Duas conquistas com a mesma letra ficam indistinguíveis no painel.
+  const icons = ACHIEVEMENTS.map((entry) => entry[3]);
+  const duplicates = icons.filter((icon, index) => icons.indexOf(icon) !== index);
+  assert.deepEqual(duplicates, [], `ícones repetidos: ${[...new Set(duplicates)].join(', ')}`);
+});
+
+test('cada conquista tem id e nome próprios', () => {
+  for (const field of [0, 1] as const) {
+    const values = ACHIEVEMENTS.map((entry) => entry[field]);
+    const duplicates = values.filter((value, index) => values.indexOf(value) !== index);
+    assert.deepEqual(duplicates, [], `campo ${field} repetido: ${duplicates.join(', ')}`);
+  }
+});
+
+test('missões têm ids próprios e pré-requisitos existentes', () => {
+  const ids = MISSIONS.map((mission) => mission.id);
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  assert.deepEqual(duplicates, [], `ids repetidos: ${duplicates.join(', ')}`);
+
+  const known = new Set(ids);
+  for (const mission of MISSIONS) {
+    const previous = (mission as { prerequisite?: string }).prerequisite;
+    if (previous) {
+      assert.ok(known.has(previous), `${mission.id} exige "${previous}", que não existe`);
+      assert.notEqual(previous, mission.id, `${mission.id} exige a si mesma`);
+    }
+  }
+});
+
+test('nenhuma cadeia de pré-requisitos entra em ciclo', () => {
+  // Um ciclo trava a campanha: nenhuma das missões envolvidas fica acessível.
+  const byId = new Map(MISSIONS.map((mission) => [mission.id, mission]));
+  for (const mission of MISSIONS) {
+    const seen = new Set<string>([mission.id]);
+    let current = (mission as { prerequisite?: string }).prerequisite;
+    while (current) {
+      assert.ok(!seen.has(current), `ciclo de pré-requisitos em ${mission.id}`);
+      seen.add(current);
+      current = (byId.get(current) as { prerequisite?: string } | undefined)?.prerequisite;
+    }
   }
 });
