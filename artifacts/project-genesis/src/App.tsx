@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type MutableRefObject } from 'react';
 import { ItemIcon, SkillIcon } from './icons';
+import { drawMobSprite } from './mob-sprites';
 import { Archive, BookOpen, FlaskConical, Gauge, Heart, PackageOpen, RotateCcw, Shield, Sparkles, Sword, Trophy, X, Zap } from 'lucide-react';
 import { accountId, applyBankOperation, combatAction, createProgressPersistence, createRoom, currentUser, getPeers, isAccountRequiredError, joinRoom, loadProgress, login, logout, newPlayerId, saveProgress, SESSION_EXPIRED_NOTICE, syncPlayer, type AuthUser, type BankOperation, type CommerceTransaction, type CombatEnemyState, type ProgressSnapshot, type RemotePlayer } from '@/lib/coop';
 
@@ -420,34 +421,47 @@ function getCharacterSheet(avatar: Avatar) {
   return image;
 }
 
-function getStandaloneSprite(path: string) {
-  return undefined;
-}
-
-const GROUND_ITEM_SPRITES: Record<ItemKind, string> = { weapon: '', armor: '', flask: '', drop: '' };
-const groundItemImages = new Map<string, HTMLImageElement>();
-const groundItemImageFailures = new Set<string>();
 
 function drawGroundItemSprite(ctx: CanvasRenderingContext2D, item: GroundItem, time: number) {
-  return false;
-  /*
-  const path = GROUND_ITEM_SPRITES[item.kind];
-  let image = groundItemImages.get(path);
-  if (!image && !groundItemImageFailures.has(path)) {
-    image = new Image();
-    image.src = path;
-    image.onerror = () => groundItemImageFailures.add(path);
-    groundItemImages.set(path, image);
-  }
-  if (!image || !image.complete || !image.naturalWidth || !image.naturalHeight) return false;
-  const bob = Math.sin(time / 260 + item.x * .02) * 1.5;
+  // Desenhado, não carregado: o gate de licença remove a pasta de arte do
+  // release, então os itens no chão apareciam como uma letra sobre o círculo.
+  const accent = RARITY_COLORS[item.rarity];
+  const dark = accent === '#a9b1a4' ? '#5d635b' : accent;
+  const float = Math.sin(time / 420 + item.x) * 1.2;
   ctx.save();
-  ctx.translate(item.x, item.y + bob);
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(image, -12, -19, 24, 24);
+  ctx.translate(item.x, item.y + float);
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = '#141a16';
+  ctx.fillStyle = accent;
+  if (item.kind === 'weapon') {
+    const long = (item.rank ?? 1) >= 4;
+    ctx.beginPath(); ctx.moveTo(0, long ? -7 : -5); ctx.lineTo(2.6, 2); ctx.lineTo(0, 5.4); ctx.lineTo(-2.6, 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-3.6, 2); ctx.lineTo(3.6, 2); ctx.stroke();
+    ctx.strokeStyle = '#6b5433'; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(0, 2.6); ctx.lineTo(0, 6.4); ctx.stroke();
+  } else if (item.kind === 'armor') {
+    ctx.beginPath();
+    ctx.moveTo(-5, -5); ctx.lineTo(0, -6.4); ctx.lineTo(5, -5); ctx.lineTo(5, 0.5);
+    ctx.quadraticCurveTo(5, 5, 0, 6.6); ctx.quadraticCurveTo(-5, 5, -5, 0.5); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = dark; ctx.globalAlpha = .6;
+    ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(0, 6.2); ctx.stroke();
+    ctx.globalAlpha = 1;
+  } else if (item.kind === 'flask') {
+    ctx.fillStyle = '#1d2a2a';
+    ctx.beginPath(); ctx.moveTo(-2, -6); ctx.lineTo(2, -6); ctx.lineTo(2, -2.6); ctx.lineTo(5, 4); ctx.quadraticCurveTo(5.6, 6.6, 3, 6.6); ctx.lineTo(-3, 6.6); ctx.quadraticCurveTo(-5.6, 6.6, -5, 4); ctx.lineTo(-2, -2.6); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.moveTo(-3.7, 1.6); ctx.lineTo(3.7, 1.6); ctx.lineTo(5, 4); ctx.quadraticCurveTo(5.6, 6.6, 3, 6.6); ctx.lineTo(-3, 6.6); ctx.quadraticCurveTo(-5.6, 6.6, -5, 4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#7d8a86'; ctx.fillRect(-2.4, -7.4, 4.8, 1.8);
+  } else {
+    ctx.beginPath(); ctx.moveTo(0, -6.4); ctx.lineTo(5.6, -2.6); ctx.lineTo(5.6, 3.4); ctx.lineTo(0, 7); ctx.lineTo(-5.6, 3.4); ctx.lineTo(-5.6, -2.6); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+  }
   ctx.restore();
   return true;
-  */
 }
 
 function drawRealHeroSprite(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number, state: AnimState, facing: Facing, time: number, avatar: Avatar) {
@@ -740,7 +754,7 @@ function GameCanvas({ game, request, remotePlayers = latestRemotePlayers, persis
     for (let r = startR; r < endR; r++) for (let c = startC; c < endC; c++) { const t = game.map[r][c]; ctx.fillStyle = colors[t]; ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE + 1, TILE_SIZE + 1); if (t === 'water') { ctx.fillStyle = 'rgba(90,180,190,.22)'; ctx.fillRect(c * TILE_SIZE + 3, r * TILE_SIZE + 8, 25, 2); } if (t === 'lava') { ctx.fillStyle = `rgba(255,${90 + Math.floor(Math.sin(time / 300 + c) * 25)},24,.55)`; ctx.fillRect(c * TILE_SIZE + 5, r * TILE_SIZE + 5, 22, 22); } }
      for (const o of game.objects) { if (o.type === 'tree') { ctx.fillStyle = '#51341f'; ctx.fillRect(o.x - 4, o.y - 2, 8, 21); ctx.fillStyle = '#1b4518'; ctx.beginPath(); ctx.arc(o.x, o.y - 9, o.r ?? 16, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#4f942d'; ctx.beginPath(); ctx.arc(o.x - 6, o.y - 15, (o.r ?? 16) * .55, 0, Math.PI * 2); ctx.fill(); } else if (o.type === 'rock') { ctx.fillStyle = '#4a4050'; ctx.beginPath(); ctx.ellipse(o.x, o.y, 14, 9, 0, 0, Math.PI * 2); ctx.fill(); } else if (o.type === 'crystal') { ctx.fillStyle = '#65d9ee'; ctx.globalAlpha = .72; ctx.beginPath(); ctx.moveTo(o.x, o.y - (o.r ?? 14)); ctx.lineTo(o.x + 9, o.y + 8); ctx.lineTo(o.x, o.y + 4); ctx.lineTo(o.x - 8, o.y + 8); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1; } else if (o.type === 'iceberg') { ctx.fillStyle = '#d7f5ff'; ctx.beginPath(); ctx.moveTo(o.x, o.y - (o.r ?? 16)); ctx.lineTo(o.x + 16, o.y + 10); ctx.lineTo(o.x - 15, o.y + 10); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#79cfe4'; ctx.stroke(); } else if (o.type === 'vent') { ctx.fillStyle = '#40333a'; ctx.beginPath(); ctx.ellipse(o.x, o.y + 4, 16, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#ff7440'; ctx.globalAlpha = .65 + .25 * Math.sin(time / 220 + o.x); ctx.beginPath(); ctx.arc(o.x, o.y - 3, 7, Math.PI, 0); ctx.stroke(); ctx.globalAlpha = 1; } else if (o.type === 'grave') { ctx.fillStyle = '#68646c'; ctx.fillRect(o.x - 6, o.y - 10, 12, 15); ctx.fillRect(o.x - 9, o.y - 5, 18, 4); } else if (o.type === 'portal') { ctx.strokeStyle = '#23e6ff'; ctx.globalAlpha = .6 + .2 * Math.sin(time / 300); ctx.beginPath(); ctx.arc(o.x, o.y, 15 + Math.sin(time / 300) * 3, 0, Math.PI * 2); ctx.stroke(); ctx.globalAlpha = 1; ctx.fillStyle = '#d8fbff'; ctx.font = 'bold 9px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(o.label ?? 'SAÍDA', o.x, o.y - 22); } else if (o.type === 'cave') { ctx.fillStyle = '#3b3446'; ctx.beginPath(); ctx.arc(o.x, o.y, 30, Math.PI, 0); ctx.lineTo(o.x + 30, o.y + 16); ctx.lineTo(o.x - 30, o.y + 16); ctx.fill(); ctx.fillStyle = '#09070c'; ctx.beginPath(); ctx.ellipse(o.x, o.y + 9, 19, 20, 0, 0, Math.PI * 2); ctx.fill(); } else if (o.type === 'firepotion' && !o.taken) { ctx.fillStyle = '#ffbd48'; ctx.globalAlpha = .7 + Math.sin(time / 300) * .2; ctx.beginPath(); ctx.arc(o.x, o.y, 8, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; } }
      const drawEffect = (fx: VisualEffect) => { const progress = 1 - fx.life / fx.maxLife; const radius = fx.radius * (fx.kind === 'dash' ? progress : .55 + progress * .7); ctx.save(); ctx.globalAlpha = Math.max(0, fx.life / fx.maxLife); ctx.strokeStyle = fx.color; ctx.fillStyle = `${fx.color}33`; ctx.lineWidth = fx.kind === 'control' ? 2 : 2.5; ctx.beginPath(); if (fx.kind === 'strike' || fx.kind === 'dash') { ctx.arc(fx.x, fx.y, radius, -Math.PI * .8, Math.PI * .25); ctx.stroke(); ctx.beginPath(); ctx.moveTo(fx.x - radius * .55, fx.y - radius * .7); ctx.lineTo(fx.x + radius * .65, fx.y + radius * .45); ctx.stroke(); } else if (fx.kind === 'heal') { ctx.arc(fx.x, fx.y, radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); for (let i = 0; i < 5; i++) { const a = i * 1.25 + progress * 3; ctx.fillStyle = fx.color; ctx.fillRect(fx.x + Math.cos(a) * radius, fx.y + Math.sin(a) * radius, 3, 3); } } else { ctx.arc(fx.x, fx.y, radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); if (fx.kind === 'control') { ctx.beginPath(); ctx.arc(fx.x, fx.y, radius * .55, progress * 5, progress * 5 + Math.PI * 1.4); ctx.stroke(); } } if (fx.label && progress < .72) { ctx.fillStyle = fx.color; ctx.font = 'bold 8px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(fx.label, fx.x, fx.y - radius - 5); } ctx.restore(); };
-       const actors = [...game.items.map((x) => ({ y: x.y, draw: () => { ctx.fillStyle = RARITY_COLORS[x.rarity]; ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x.x, x.y, 9, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); if (!drawGroundItemSprite(ctx, x, time)) { ctx.fillStyle = '#182018'; ctx.font = 'bold 8px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(x.icon, x.x, x.y + 3); } } })), ...game.npcs.map((x) => ({ y: x.y, draw: () => { ctx.fillStyle = x.faction === 'awakened' ? 'rgba(98,182,108,.35)' : 'rgba(35,230,255,.35)'; ctx.beginPath(); ctx.arc(x.x, x.y, 23, 0, Math.PI * 2); ctx.fill(); drawHeroSprite(ctx, x.x, x.y, x.faction === 'awakened' ? '#93d77f' : '#74eaff', 18, 'idle', 'south', time); ctx.fillStyle = '#ffd76b'; ctx.font = '10px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(x.name, x.x, x.y - 31); } })), ...game.enemies.map((e) => ({ y: e.y, draw: () => { if (e.state === 'dead') return; if (game.player.target === e.id) { ctx.strokeStyle = '#ff544a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(e.x, e.y, e.boss ? 34 : 23, 0, Math.PI * 2); ctx.stroke(); } drawHeroSprite(ctx, e.x, e.y, e.color, e.boss ? 28 : 17, e.anim, e.facing, time, undefined, e.boss); if (e.hp < e.maxHp) { ctx.fillStyle = '#180909'; ctx.fillRect(e.x - (e.boss ? 30 : 19), e.y - (e.boss ? 39 : 27), e.boss ? 60 : 38, 5); ctx.fillStyle = e.boss ? '#ffcc44' : '#ff4444'; ctx.fillRect(e.x - (e.boss ? 30 : 19), e.y - (e.boss ? 39 : 27), (e.boss ? 60 : 38) * e.hp / e.maxHp, 5); } ctx.fillStyle = e.boss ? '#ffcc44' : '#f0ede2'; ctx.font = `${e.boss ? 12 : 10}px var(--app-font-mono)`; ctx.textAlign = 'center'; ctx.fillText(e.boss ? `${e.name} · F${e.phase}` : e.name, e.x, e.y - (e.boss ? 48 : 33)); } })), { y: game.player.y, draw: () => { ctx.fillStyle = game.player.avatar.color; ctx.globalAlpha = .28; ctx.beginPath(); ctx.arc(game.player.x, game.player.y, 26 + Math.sin(time / 600) * 3, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; drawHeroSprite(ctx, game.player.x, game.player.y, game.player.avatar.color, 21, game.player.anim, game.player.facing, time, game.player.avatar); ctx.fillStyle = '#fff'; ctx.font = 'bold 11px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(`${game.player.avatar.icon} · Nv ${game.player.level}`, game.player.x, game.player.y - 39); } }].sort((a, b) => a.y - b.y); remotePlayers.forEach((remote) => { const avatar = AVATARS.find((item) => item.id === remote.avatar); if (!avatar) return; drawHeroSprite(ctx, remote.x, remote.y, avatar.color, 21, remote.action, 'south', time, avatar); ctx.fillStyle = '#8ee7ff'; ctx.font = 'bold 10px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(`COOP · Nv ${remote.level}`, remote.x, remote.y - 39); }); actors.forEach((a) => a.draw()); game.effects.forEach(drawEffect); for (const f of game.floaters) { ctx.globalAlpha = f.life; ctx.fillStyle = f.color; ctx.font = 'bold 15px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(f.text, f.x, f.y); } ctx.restore();
+       const actors = [...game.items.map((x) => ({ y: x.y, draw: () => { ctx.fillStyle = RARITY_COLORS[x.rarity]; ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x.x, x.y, 9, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); if (!drawGroundItemSprite(ctx, x, time)) { ctx.fillStyle = '#182018'; ctx.font = 'bold 8px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(x.icon, x.x, x.y + 3); } } })), ...game.npcs.map((x) => ({ y: x.y, draw: () => { ctx.fillStyle = x.faction === 'awakened' ? 'rgba(98,182,108,.35)' : 'rgba(35,230,255,.35)'; ctx.beginPath(); ctx.arc(x.x, x.y, 23, 0, Math.PI * 2); ctx.fill(); drawHeroSprite(ctx, x.x, x.y, x.faction === 'awakened' ? '#93d77f' : '#74eaff', 18, 'idle', 'south', time); ctx.fillStyle = '#ffd76b'; ctx.font = '10px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(x.name, x.x, x.y - 31); } })), ...game.enemies.map((e) => ({ y: e.y, draw: () => { if (e.state === 'dead') return; if (game.player.target === e.id) { ctx.strokeStyle = '#ff544a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(e.x, e.y, e.boss ? 34 : 23, 0, Math.PI * 2); ctx.stroke(); } if (!drawMobSprite(ctx, e.type, e.x, e.y, e.boss ? 28 : 17, e.anim, e.facing, time, e.color)) drawHeroSprite(ctx, e.x, e.y, e.color, e.boss ? 28 : 17, e.anim, e.facing, time, undefined, e.boss); if (e.hp < e.maxHp) { ctx.fillStyle = '#180909'; ctx.fillRect(e.x - (e.boss ? 30 : 19), e.y - (e.boss ? 39 : 27), e.boss ? 60 : 38, 5); ctx.fillStyle = e.boss ? '#ffcc44' : '#ff4444'; ctx.fillRect(e.x - (e.boss ? 30 : 19), e.y - (e.boss ? 39 : 27), (e.boss ? 60 : 38) * e.hp / e.maxHp, 5); } ctx.fillStyle = e.boss ? '#ffcc44' : '#f0ede2'; ctx.font = `${e.boss ? 12 : 10}px var(--app-font-mono)`; ctx.textAlign = 'center'; ctx.fillText(e.boss ? `${e.name} · F${e.phase}` : e.name, e.x, e.y - (e.boss ? 48 : 33)); } })), { y: game.player.y, draw: () => { ctx.fillStyle = game.player.avatar.color; ctx.globalAlpha = .28; ctx.beginPath(); ctx.arc(game.player.x, game.player.y, 26 + Math.sin(time / 600) * 3, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; drawHeroSprite(ctx, game.player.x, game.player.y, game.player.avatar.color, 21, game.player.anim, game.player.facing, time, game.player.avatar); ctx.fillStyle = '#fff'; ctx.font = 'bold 11px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(`${game.player.avatar.icon} · Nv ${game.player.level}`, game.player.x, game.player.y - 39); } }].sort((a, b) => a.y - b.y); remotePlayers.forEach((remote) => { const avatar = AVATARS.find((item) => item.id === remote.avatar); if (!avatar) return; drawHeroSprite(ctx, remote.x, remote.y, avatar.color, 21, remote.action, 'south', time, avatar); ctx.fillStyle = '#8ee7ff'; ctx.font = 'bold 10px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(`COOP · Nv ${remote.level}`, remote.x, remote.y - 39); }); actors.forEach((a) => a.draw()); game.effects.forEach(drawEffect); for (const f of game.floaters) { ctx.globalAlpha = f.life; ctx.fillStyle = f.color; ctx.font = 'bold 15px var(--app-font-mono)'; ctx.textAlign = 'center'; ctx.fillText(f.text, f.x, f.y); } ctx.restore();
     const mini = miniRef.current?.getContext('2d'); if (mini && miniRef.current) {
       const mw = miniRef.current.width, mh = miniRef.current.height;
       mini.clearRect(0, 0, mw, mh); mini.fillStyle = '#1b2c1d'; mini.fillRect(0, 0, mw, mh);
