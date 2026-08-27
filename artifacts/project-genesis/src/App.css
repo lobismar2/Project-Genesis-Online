@@ -1,0 +1,87 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.character {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  animation: float 0.1s ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.character.idle {
+  opacity: 1;
+  animation: idle-pulse 1s ease-in-out infinite;
+}
+
+@keyframes idle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Animação para cada frame de movimento */
+.character.walk-frame-0 {
+  animation: walk-step-0 0.1s steps(1);
+}
+
+.character.walk-frame-1 {
+  animation: walk-step-1 0.1s steps(1);
+}
+
+.character.walk-frame-2 {
+  animation: walk-step-2 0.1s steps(1);
+}
+
+.character.walk-frame-3 {
+  animation: walk-step-3 0.1s steps(1);
+}
+
+@keyframes walk-step-0 {
+  to {
+    transform: scaleX(1) translateY(0);
+  }
+}
+
+@keyframes walk-step-1 {
+  to {
+    transform: scaleX(1) translateY(-2px);
+  }
+}
+
+@keyframes walk-step-2 {
+  to {
+    transform: scaleX(1) translateY(0);
+  }
+}
+
+@keyframes walk-step-3 {
+  to {
+    transform: scaleX(1) translateY(-1px);
+  }
+}
