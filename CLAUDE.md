@@ -1,6 +1,6 @@
 # CLAUDE.md - Project Genesis Online
 
-**Last Updated:** August 23, 2026  
+**Last Updated:** August 27, 2026  
 **Repository:** [lobismar2/Project-Genesis-Online](https://github.com/lobismar2/Project-Genesis-Online)  
 **Primary AI Branch:** `claude/claude-md-docs-5unpos`
 
@@ -107,8 +107,8 @@ pnpm --filter @workspace/project-genesis test
 # Run E2E tests
 pnpm --filter @workspace/project-genesis exec playwright test
 
-# Run with specific browser
-pnpm --filter @workspace/project-genesis exec playwright test --project=chromium
+# Run with specific browser (mobile)
+pnpm --filter @workspace/project-genesis exec playwright test --project=chromium-mobile
 
 # Format code (when configured)
 pnpm format
@@ -220,7 +220,7 @@ This project uses pnpm workspaces for managing multiple packages. The workspace 
 
 **To Add New Packages:**
 
-1. Create package directory: `mkdir -p packages/new-package`
+1. Create package directory: `mkdir -p artifacts/new-package`
 2. Add `package.json`:
 ```json
 {
@@ -275,8 +275,8 @@ pnpm --filter @workspace/project-genesis exec playwright test --ui
 #### Test Browsers
 
 Current test configuration:
-- **Chromium (mobile)** — Default desktop browser
-- **WebKit (mobile)** — Safari-equivalent browser
+- **Chromium (mobile)** — Mobile variant of Chromium browser
+- **WebKit (mobile)** — Mobile variant of Safari-equivalent browser
 
 #### Test Location
 
@@ -307,7 +307,7 @@ When adding TypeScript code:
 ### File Organization
 
 ```
-artifact/project-genesis/
+artifacts/project-genesis/
 ├── src/
 │   ├── components/        # React/UI components
 │   ├── pages/            # Page components
@@ -498,6 +498,7 @@ pnpm install --force
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.0.1 | 2026-08-27 | Fixed typos, inconsistencies, and updated date |
 | 1.0.0 | 2026-08-23 | Initial CLAUDE.md creation - monorepo setup, workflows, and AI guidelines |
 
 ---
